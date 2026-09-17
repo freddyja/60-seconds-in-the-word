@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>60 Seconds in the Word</title>
+
+<!-- PWA / app-shell setup -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#8a3324">
+<meta name="description" content="A one-minute daily devotional for Fire Fellowship — English, Spanish, and Portuguese.">
+
+<!-- iOS home-screen support -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="60 Sec Word">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+<!-- icons -->
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<style>
+  :root{
+    --bg:#f5f1e8;
+    --card:#ffffff;
+    --ink:#231f1a;
+    --ink-soft:#5a534a;
+    --accent:#8a3324;
+    --accent-soft:#c96a4f;
+    --line:#e3dccd;
+    --gold:#a9822f;
+    --shadow: 0 10px 30px rgba(35,31,26,0.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#171310;
+      --card:#221d18;
+      --ink:#f2ece1;
+      --ink-soft:#b8ad9c;
+      --accent:#e2825f;
+      --accent-soft:#c96a4f;
+      --line:#3a322a;
+      --gold:#d7b25c;
+      --shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#171310;
+    --card:#221d18;
+    --ink:#f2ece1;
+    --ink-soft:#b8ad9c;
+    --accent:#e2825f;
+    --accent-soft:#c96a4f;
+    --line:#3a322a;
+    --gold:#d7b25c;
+    --shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:32px 16px 64px;
+  }
+  .wrap{
+    width:100%;
+    max-width:640px;
+  }
+  header{
+    text-align:center;
+    margin-bottom:28px;
+  }
+  .brand{
+    font-size:13px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight:600;
+  }
+  h1{
+    font-size:32px;
+    margin:6px 0 4px;
+    letter-spacing:0.5px;
+  }
+  .tagline{
+    color:var(--ink-soft);
+    font-size:14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .controls{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .lang-toggle{
+    display:flex;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:3px;
+    box-shadow: var(--shadow);
+  }
+  .lang-toggle button{
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .lang-toggle button.active{
+    background:var(--accent);
+    color:#fff;
+  }
+  .streak{
+    font-size:12px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .streak b{ color:var(--accent); }
+
+  .card{
+    background:var(--card);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    border:1px solid var(--line);
+    padding:28px 24px 24px;
+    margin-bottom:18px;
+  }
+  .ref{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size:12px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .title{
+    font-size:24px;
+    font-weight:700;
+    margin:0 0 16px;
+    color:var(--accent);
+    line-height:1.25;
+  }
+  blockquote{
+    margin:0 0 18px;
+    padding-left:14px;
+    border-left:3px solid var(--accent-soft);
+    font-style:italic;
+    color:var(--ink-soft);
+    font-size:16px;
+    line-height:1.55;
+  }
+  .body p{
+    font-size:16.5px;
+    line-height:1.7;
+    margin:0 0 14px;
+  }
+  .body p:last-child{margin-bottom:0;}
+  .body strong{ color:var(--accent); }
+
+  .questions{
+    margin-top:6px;
+  }
+  .questions-title{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size:12px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+    margin:0 0 10px;
+  }
+  .q{
+    display:flex;
+    gap:10px;
+    margin-bottom:10px;
+    font-size:15.5px;
+    line-height:1.55;
+  }
+  .q .num{
+    flex:0 0 auto;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    margin-top:2px;
+  }
+
+  .nav{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .nav button{
+    width:100%;
+    border:1px solid var(--line);
+    background:var(--card);
+    color:var(--ink);
+    padding:12px 14px;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow: var(--shadow);
+  }
+  .nav button:active{ transform: translateY(1px); }
+  .mark-read{
+    background:var(--accent) !important;
+    color:#fff !important;
+    border-color:var(--accent) !important;
+  }
+  .mark-read.done{
+    background:#4c7a52 !important;
+    border-color:#4c7a52 !important;
+  }
+
+  .top-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  .top-nav button{
+    background:none;
+    border:none;
+    padding:4px 2px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.2px;
+    cursor:pointer;
+  }
+  .top-nav button:active{ opacity:0.7; }
+  .top-nav .prevBtn{ color:#d0453a; }
+  .top-nav .nextBtn{ color:var(--ink-soft); }
+
+  .install-btn{
+    display:block;
+    margin:0 auto 18px;
+    background:none;
+    border:1px dashed var(--gold);
+    color:var(--gold);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size:12px;
+    font-weight:700;
+    padding:8px 14px;
+    border-radius:999px;
+    cursor:pointer;
+  }
+  .install-btn:active{ opacity:0.7; }
+
+  .dots{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin:18px 0 6px;
+  }
+  .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--line);
+    cursor:pointer;
+  }
+  .dot.active{ background:var(--accent); }
+
+  footer{
+    text-align:center;
+    margin-top:24px;
+    font-size:12px;
+    color:var(--ink-soft);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">Fire Fellowship</div>
+    <h1>60 Seconds in the Word</h1>
+    <div class="tagline">A minute with the Word, brother.</div>
+  </header>
+
+  <div class="controls">
+    <div class="lang-toggle" id="langToggle">
+      <button data-lang="en" class="active">EN</button>
+      <button data-lang="es">ES</button>
+      <button data-lang="pt">PT</button>
+    </div>
+    <div class="streak" id="streakLabel"></div>
+  </div>
+
+  <button id="installBtn" class="install-btn" hidden>⤓ Install App</button>
+
+  <div class="top-nav">
+    <button id="prevBtn" class="prevBtn">← Prev</button>
+    <button id="nextBtn" class="nextBtn">Next →</button>
+  </div>
+
+  <div class="card">
+    <div class="ref" id="refLine"></div>
+    <blockquote id="verseLine"></blockquote>
+    <div class="title" id="titleLine"></div>
+    <div class="body" id="bodyLines"></div>
+  </div>
+
+  <div class="card">
+    <div class="questions-title" id="qTitle">Discussion Questions</div>
+    <div class="questions" id="questionsList"></div>
+  </div>
+
+  <div class="dots" id="dots"></div>
+
+  <div class="nav">
+    <button id="markBtn" class="mark-read">Mark Read</button>
+  </div>
+
+  <footer>Worry · Grace · Break — Fire Fellowship devotional series</footer>
+</div>
+
+<script>
+const UI_TEXT = {
+  en: { q: "Discussion Questions", prev: "← Prev", next: "Next →", mark: "Mark Read", done: "Read ✓", streak: (n) => `<b>${n}</b> day${n===1?'':'s'} read` },
+  es: { q: "Preguntas para el grupo", prev: "← Anterior", next: "Siguiente →", mark: "Marcar leído", done: "Leído ✓", streak: (n) => `<b>${n}</b> día${n===1?'':'s'} leído${n===1?'':'s'}` },
+  pt: { q: "Perguntas para o grupo", prev: "← Anterior", next: "Próximo →", mark: "Marcar como lido", done: "Lido ✓", streak: (n) => `<b>${n}</b> dia${n===1?'':'s'} lido${n===1?'':'s'}` }
+};
+
+const DEVOTIONALS = [
+{
+  id: "worry",
+  en: {
+    ref: "Matthew 6:25-27, 34",
+    verse: "“Therefore I tell you, do not be anxious about your life… Can any of you by worrying add a single hour to his life?… Sufficient for the day is its own trouble.”",
+    title: "The Weight of Worry",
+    body: [
+      "Jesus didn't say worry is understandable. He said stop.",
+      "That “therefore” at the start isn't casual. He just finished telling his disciples you cannot serve two masters. A man who trusts God with his eternity but white-knuckles his rent, his job, his future — that man has a divided heart.",
+      "Jesus asks a sharp question: Can worrying add a single hour to your life? The answer is no. It actually shortens it. Every man in this room knows what chronic anxiety does to the body, to sleep, to how you treat the people you love. Worry doesn't solve anything. It just taxes today for a debt that may never come due.",
+      "Notice what Jesus points to: birds. Not successful men, not men who had it all figured out. Birds. The Father feeds them, and they don't have a 401k. He's not saying don't work, don't plan, don't be responsible. He's saying stop carrying what isn't yours to carry.",
+      "The real issue isn't circumstances — it's trust. Most of our worry is a quiet belief that God might drop the ball. Jesus is calling that out directly.",
+      "<strong>Brothers, what are you carrying into this room right now?</strong>",
+      "Jesus says: Tomorrow has enough trouble of its own. You don't have to solve it tonight. You have to trust the One who already lives there."
+    ],
+    questions: [
+      "What's the one thing you find yourself worrying about most right now?",
+      "Where does your worry usually come from — fear of failure, fear of loss, or something else?",
+      "What would it look like, practically, to give that worry to God this week instead of just praying about it?"
+    ]
+  },
+  es: {
+    ref: "Mateo 6:25-27, 34",
+    verse: "“Por eso os digo: No os afanéis por vuestra vida… ¿Y quién de vosotros podrá, por mucho que se afane, añadir a su estatura un codo?… Basta a cada día su propio mal.”",
+    title: "El Peso de la Ansiedad",
+    body: [
+      "Pablo no amaneció contento. Lo aprendió.",
+      "Ese “por eso” al comienzo no es casual. Acabó de decirles a sus discípulos que nadie puede servir a dos señores. El hombre que confía a Dios su eternidad pero se aferra con los nudillos blancos a su sueldo, su trabajo, su futuro — ese hombre tiene el corazón dividido.",
+      "Jesús hace una pregunta directa: ¿Puede alguien añadir una sola hora a su vida con preocupaciones? La respuesta es no. Al contrario, las acorta. Cada hombre en este grupo sabe lo que la ansiedad crónica le hace al cuerpo, al sueño, a cómo trata a los que ama.",
+      "Fíjate en lo que señala Jesús: las aves. No hombres exitosos. Las aves. El Padre las alimenta y no tienen fondo de retiro. No está diciendo que no trabajes. Está diciendo que dejes de cargar lo que no te corresponde.",
+      "El problema real no son las circunstancias — es la confianza. La mayoría de nuestras preocupaciones son una creencia silenciosa de que Dios podría fallar. Jesús está confrontando eso directamente.",
+      "<strong>Hermanos, ¿qué estás cargando al entrar aquí hoy?</strong>",
+      "Jesús dice: El mañana traerá su propio afán. No tienes que resolverlo esta noche. Tienes que confiar en Aquel que ya vive en ese mañana."
+    ],
+    questions: [
+      "¿Cuál es la preocupación que más ocupa tu mente en este momento?",
+      "¿De dónde viene tu ansiedad generalmente — miedo al fracaso, miedo a perder algo, o algo más?",
+      "¿Cómo se vería, de manera práctica, entregar esa preocupación a Dios esta semana, en lugar de solo orar por ella?"
+    ]
+  },
+  pt: {
+    ref: "Mateus 6:25-27, 34",
+    verse: "“Por isso vos digo: não vos preocupeis com a vossa vida… E qual de vós, por mais que se preocupe, pode acrescentar um só côvado à sua estatura?… A cada dia basta o seu mal.”",
+    title: "O Peso da Ansiedade",
+    body: [
+      "Jesus não disse que a preocupação é compreensível. Disse que parem.",
+      "Esse “por isso” no começo não é casual. Ele acabava de dizer aos seus discípulos que ninguém pode servir a dois senhores. O homem que confia a Deus a sua eternidade mas agarra com força o seu salário, o seu emprego, o seu futuro — esse homem tem o coração dividido.",
+      "Jesus faz uma pergunta direta: Alguém pode acrescentar uma hora sequer à sua vida por meio da preocupação? A resposta é não. Ela na verdade a encurta. Todo homem neste grupo sabe o que a ansiedade crônica faz ao corpo, ao sono, à forma como trata as pessoas que ama.",
+      "Repare no que Jesus aponta: os pássaros. Não homens bem-sucedidos. Os pássaros. O Pai os alimenta e eles não têm previdência privada. Ele não está dizendo para não trabalhar. Está dizendo para parar de carregar o que não é seu carregar.",
+      "O problema real não são as circunstâncias — é a confiança. A maior parte da nossa preocupação é uma crença silenciosa de que Deus pode falhar. Jesus está confrontando isso diretamente.",
+      "<strong>Irmãos, o que você está carregando ao entrar aqui hoje?</strong>",
+      "Jesus diz: O amanhã cuidará de si mesmo. Você não precisa resolver isso esta noite. Você precisa confiar nAquele que já vive nesse amanhã."
+    ],
+    questions: [
+      "Qual é a coisa que mais ocupa sua mente com preocupação agora?",
+      "De onde vem a sua ansiedade geralmente — medo de fracassar, medo de perder algo, ou outra coisa?",
+      "Como seria, na prática, entregar essa preocupação a Deus esta semana, em vez de só orar a respeito?"
+    ]
+  }
+},
+{
+  id: "grace",
+  en: {
+    ref: "Ephesians 2:4–9",
+    verse: "“But God, being rich in mercy, because of the great love with which he loved us, even when we were dead in our trespasses, made us alive together with Christ—by grace you have been saved… For by grace you have been saved through faith. And this is not your own doing; it is the gift of God, not a result of works, so that no one may boast.”",
+    title: "The God Who Gives What We Don't Deserve",
+    body: [
+      "Grace is not a reward. It is a rescue.",
+      "Most men are wired to earn. We earn our paycheck, our reputation, our place at the table. So when we hear “God loves you,” we instinctively look for the fine print — what do I have to do to keep it? But that is not grace. That is a transaction.",
+      "Paul makes it plain: you were dead. Dead men don't cooperate with their own rescue. They don't clean themselves up first. God moved toward us while we were still in our mess — not after we improved, not after we got consistent, not after we stopped failing the people we love. While we were dead.",
+      "The Greek word is charis — a gift freely given with no expectation of repayment. It is not tolerance. It is not God lowering the bar. It is God meeting the full weight of the bar himself in Christ and then handing you the result as a gift.",
+      "This should wreck your pride and free you at the same time. You cannot boast about your standing before God, because you did not build it. You also cannot lose it by failing, because you did not earn it. It rests entirely on what Christ did — finished, done, permanent.",
+      "<strong>Brothers, stop trying to pay back what was never a loan.</strong>",
+      "Grace received changes how you live — not to earn favor, but from it. The man who knows he has been rescued does not white-knuckle his religion. He walks differently."
+    ],
+    questions: [
+      "Where in your life are you still trying to earn God's approval instead of living from it?",
+      "How does knowing salvation is a gift — not a result of your effort — change how you handle your failures?",
+      "What would it look like this week to live from grace rather than toward it?"
+    ]
+  },
+  es: {
+    ref: "Efesios 2:4–9",
+    verse: "“Pero Dios, que es rico en misericordia, por su gran amor con que nos amó, aun estando nosotros muertos en pecados, nos dio vida juntamente con Cristo (por gracia soís salvos)… Porque por gracia soís salvos por medio de la fe; y esto no de vosotros, pues es don de Dios; no por obras, para que nadie se glorie.”",
+    title: "El Dios que Da lo que no Merecemos",
+    body: [
+      "La gracia no es una recompensa. Es un rescate.",
+      "La mayoría de los hombres están programados para ganarse las cosas. Nos ganamos el sueldo, la reputación, el lugar en la mesa. Entonces cuando escuchamos “Dios te ama,” instintivamente buscamos la letra pequeña: ¿qué tengo que hacer para mantenerlo? Pero eso no es gracia. Eso es una transacción.",
+      "Pablo lo deja claro: estabas muerto. Los muertos no cooperan con su propio rescate. No se limpian primero. Dios vino hacia nosotros mientras todavía estábamos en nuestra situación — no después de mejorar, no después de ser consistentes, no después de dejar de fallarle a quienes amamos. Mientras estábamos muertos.",
+      "La palabra griega es charis — un regalo dado libremente sin expectativa de pago. No es tolerancia. No es que Dios baje el estándar. Es que Dios mismo cargó el peso total del estándar en Cristo y luego te entregó el resultado como regalo.",
+      "Esto debería destruir tu orgullo y liberarte al mismo tiempo. No puedes presumir de tu posición delante de Dios porque tú no la construiste. Tampoco puedes perderla al fallar, porque no te la ganaste. Descansa completamente en lo que Cristo hizo — terminado, hecho, permanente.",
+      "<strong>Hermanos, dejen de intentar pagar lo que jamás fue un préstamo.</strong>",
+      "La gracia recibida cambia cómo vives — no para ganarte el favor, sino desde él. El hombre que sabe que fue rescatado no agarra su religión con los nudillos blancos. Camina diferente."
+    ],
+    questions: [
+      "¿En qué área de tu vida todavía estás intentando ganarte la aprobación de Dios en lugar de vivir desde ella?",
+      "¿Cómo cambia saber que la salvación es un regalo — no el resultado de tu esfuerzo — la manera en que manejas tus fracasos?",
+      "¿Cómo se vería esta semana vivir desde la gracia en lugar de vivir hacia ella?"
+    ]
+  },
+  pt: {
+    ref: "Efésios 2:4–9",
+    verse: "“Mas Deus, que é rico em misericórdia, por causa do grande amor com que nos amou, mesmo estando nós mortos em nossos delitos, nos deu vida juntamente com Cristo — pela graça vós sois salvos… Porque pela graça sois salvos mediante a fé, e isso não vem de vós; é dom de Deus. Não vem das obras, para que ninguém se glorie.”",
+    title: "O Deus que Dá o que Não Merecemos",
+    body: [
+      "A graça não é uma recompensa. É um resgate.",
+      "A maioria dos homens é programada para conquistar. Conquistamos o salário, a reputação, o nosso lugar à mesa. Então, quando ouvimos “Deus te ama,” instintivamente procuramos as letras miúdas: o que preciso fazer para manter isso? Mas isso não é graça. Isso é uma transação.",
+      "Paulo é direto: você estava morto. Mortos não cooperam com o próprio resgate. Não se limpam primeiro. Deus veio em nossa direção enquanto ainda estávamos na nossa bagunça — não depois de melhorar, não depois de ser consistentes, não depois de parar de falhar com as pessoas que amamos. Enquanto estávamos mortos.",
+      "A palavra grega é charis — um presente dado livremente sem expectativa de pagamento. Não é tolerância. Não é Deus abaixando o padrão. É Deus carregando o peso total do padrão em Cristo e depois entregando o resultado para você como presente.",
+      "Isso deveria destruir o seu orgulho e libertar você ao mesmo tempo. Você não pode se orgulhar da sua posição diante de Deus, porque você não a construiu. Também não pode perdê-la ao falhar, porque não a mereceu. Ela repousa inteiramente no que Cristo fez — terminado, feito, permanente.",
+      "<strong>Irmãos, parem de tentar pagar o que nunca foi um empréstimo.</strong>",
+      "A graça recebida muda como você vive — não para conquistar favor, mas a partir dele. O homem que sabe que foi resgatado não segura a religião com os nós dos dedos brancos. Ele caminha de forma diferente."
+    ],
+    questions: [
+      "Em que área da sua vida você ainda está tentando conquistar a aprovação de Deus em vez de viver a partir dela?",
+      "Como saber que a salvação é um presente — não resultado do seu esforço — muda a forma como você lida com os seus fracassos?",
+      "Como seria, na prática, viver a partir da graça esta semana, em vez de viver em direção a ela?"
+    ]
+  }
+},
+{
+  id: "break",
+  en: {
+    ref: "Psalm 34:18 / Isaiah 43:2 / 2 Corinthians 4:8–9",
+    verse: "“The LORD is close to the brokenhearted and saves those who are crushed in spirit.” — Psalm 34:18 / “When you pass through the waters, I will be with you.” — Isaiah 43:2 / “We are hard pressed on every side, but not crushed… struck down, but not destroyed.” — 2 Corinthians 4:8–9",
+    title: "God Did Not Let Me Break",
+    body: [
+      "You should have broken. You didn't. That wasn't luck.",
+      "Every man in this room has been through something that had every reason to finish him. A marriage that came apart. A business that went under. A season of failure so complete he stopped expecting anything good. A loss so heavy he didn't know how to stand up the next morning. And yet here he is.",
+      "That is not resilience. Resilience is something you build. What kept you is Someone who held. Paul lists the reality plainly: hard pressed, perplexed, persecuted, struck down. He doesn't skip over the pain to get to the victory. He names it — and then names what did not happen. Not crushed. Not in despair. Not abandoned. Not destroyed.",
+      "Isaiah 43:2 is a direct promise from God to His people — not a comfort written after the fact, but a declaration spoken into their fear. He does not say the water will part or the fire will go out. He says: when you pass through it, I will be there, and it will not overwhelm you.",
+      "The Hebrew in Psalm 34 says God is near to the “broken of heart” — not to the ones who have it together, not to the ones who are strong enough to come to Him. He draws near specifically to the man who is falling apart. That is the character of God on display.",
+      "<strong>Brothers, the fact that you are still standing is testimony.</strong>",
+      "Stop treating your survival like it was ordinary. It wasn't. And the God who held you then is the same God who sits with you now."
+    ],
+    questions: [
+      "What is the hardest season you've walked through — and looking back, where do you see God's hand in it?",
+      "Is there something you're in right now that feels like it might break you? What does it look like to trust God's presence in that, not just His rescue from it?",
+      "Who in your life needs to hear that God does not abandon men in their worst moments? How can you carry that to them this week?"
+    ]
+  },
+  es: {
+    ref: "Salmo 34:18 / Isaías 43:2 / 2 Corintios 4:8–9",
+    verse: "“Cercano está el Señor a los quebrantados de corazón, y salva a los de espíritu abatido.” — Salmo 34:18 / “Cuando pases por las aguas, yo estaré contigo.” — Isaías 43:2 / “Estamos atribulados en todo, mas no angustiados… derribados, pero no destruidos.” — 2 Corintios 4:8–9",
+    title: "Dios No Me Dejó Quebrar",
+    body: [
+      "Deberías haberte quebrado. No lo hiciste. Eso no fue suerte.",
+      "Cada hombre en este grupo ha pasado por algo que tenía todas las razones para acabar con él. Un matrimonio que se derrumbó. Un negocio que fracasó. Una temporada de fracasos tan completa que dejó de esperar algo bueno. Una pérdida tan pesada que no sabía cómo levantarse al día siguiente. Y sin embargo, aquí está.",
+      "Eso no es resiliencia. La resiliencia es algo que uno construye. Lo que te sostuvo es Alguien que aguantó. Pablo lo lista claramente: atribulados, en apuros, perseguidos, derribados. No salta sobre el dolor para llegar a la victoria. Lo nombra — y luego nombra lo que no ocurrió. No angustiados. No desesperados. No desamparados. No destruidos.",
+      "Isaías 43:2 es una promesa directa de Dios a su pueblo — no un consuelo escrito después de los hechos, sino una declaración pronunciada en medio del miedo. No dice que las aguas se abrirán ni que el fuego se apagará. Dice: cuando pases por ello, yo estaré ahí, y no te ahogarás.",
+      "El hebreo en el Salmo 34 dice que Dios está cerca de los “quebrantados de corazón” — no de los que tienen todo bajo control, no de los que son suficientemente fuertes para acercarse a él. Él se acerca específicamente al hombre que se está cayendo a pedazos. Eso es el carácter de Dios en exhibición.",
+      "<strong>Hermanos, el hecho de que todavía estén de pie es un testimonio.</strong>",
+      "Dejen de tratar su supervivencia como si fuera algo ordinario. No lo fue. Y el Dios que los sostuvo entonces es el mismo Dios que está con ustedes ahora."
+    ],
+    questions: [
+      "¿Cuál es la temporada más difícil que has atravesado — y mirando atrás, dónde ves la mano de Dios en ello?",
+      "¿Hay algo por lo que estás pasando ahora que sientes que podría quebrarte? ¿Cómo se vería confiar en la presencia de Dios en eso, y no solo en su rescate de eso?",
+      "¿Quién en tu vida necesita escuchar que Dios no abandona a los hombres en sus peores momentos? ¿Cómo puedes llevarle eso esta semana?"
+    ]
+  },
+  pt: {
+    ref: "Salmo 34:18 / Isaías 43:2 / 2 Coríntios 4:8–9",
+    verse: "“O Senhor está perto dos que têm o coração quebrantado e salva os de espírito abatido.” — Salmo 34:18 / “Quando passares pelas águas, eu serei contigo.” — Isaías 43:2 / “Estamos por todos os lados pressionados, mas não esmagados… abatidos, mas não destruídos.” — 2 Coríntios 4:8–9",
+    title: "Deus Não Me Deixou Quebrar",
+    body: [
+      "Você deveria ter quebrado. Não quebrou. Isso não foi sorte.",
+      "Todo homem neste grupo passou por algo que tinha todos os motivos para acabá-lo. Um casamento que desmoronou. Um negócio que faliu. Uma temporada de fracassos tão completa que ele parou de esperar qualquer coisa boa. Uma perda tão pesada que ele não sabia como se levantar na manhã seguinte. E mesmo assim, aqui está.",
+      "Isso não é resiliência. Resiliência é algo que se constrói. O que te sustentou é Alguém que segurou. Paulo lista a realidade claramente: pressionados, perplexos, perseguidos, abatidos. Ele não pula a dor para chegar à vitória. Ele a nomeia — e depois nomeia o que não aconteceu. Não esmagados. Não em desespero. Não desamparados. Não destruídos.",
+      "Isaías 43:2 é uma promessa direta de Deus ao seu povo — não um consolo escrito depois dos fatos, mas uma declaração pronunciada no meio do medo. Ele não diz que as águas vão se abrir ou que o fogo vai se apagar. Ele diz: quando você passar por isso, eu estarei lá, e não te submergirá.",
+      "O hebraico no Salmo 34 diz que Deus está perto dos “quebrantados de coração” — não dos que têm tudo sob controle, não dos que são fortes o suficiente para se aproximar d'Ele. Ele se aproxima especificamente do homem que está se despedaçando. Isso é o caráter de Deus em exibição.",
+      "<strong>Irmãos, o fato de vocês ainda estarem de pé é um testemunho.</strong>",
+      "Parem de tratar a sua sobrevivência como se fosse algo ordinário. Não foi. E o Deus que os sustentou então é o mesmo Deus que está com vocês agora."
+    ],
+    questions: [
+      "Qual foi a temporada mais difícil pela qual você passou — e olhando para trás, onde você vê a mão de Deus nisso?",
+      "Há algo pelo qual você está passando agora que sente que pode te quebrar? Como seria confiar na presença de Deus nisso, e não apenas no seu resgate disso?",
+      "Quem na sua vida precisa ouvir que Deus não abandona os homens em seus piores momentos? Como você pode levar isso a essa pessoa esta semana?"
+    ]
+  }
+},
+{
+  id: "fear",
+  en: {
+    ref: "Joshua 1:9",
+    verse: "“Have I not commanded you? Be strong and courageous. Do not be afraid; do not be discouraged, for the LORD your God will be with you wherever you go.”",
+    title: "Fear Is Not the Final Word",
+    body: [
+      "Joshua wasn't a rookie. He'd watched Moses part a sea and still felt the ground shake when it was his turn to lead.",
+      "God doesn't tell him fear is irrational. He tells him what to do with it: be strong, be courageous, don't let it steer.",
+      "Notice the reason given — not “you're capable enough,” but “I will be with you wherever you go.” The command rests entirely on presence, not performance.",
+      "Every man in this room carries a version of Joshua's fear — a decision, a diagnosis, a conversation you've been avoiding, a future you can't see the shape of.",
+      "<strong>Brothers, courage was never the absence of fear. It's obedience in spite of it.</strong>",
+      "You don't need the fear to leave before you move. You need to know who's moving with you."
+    ],
+    questions: [
+      "What's the specific thing fear is currently talking you out of?",
+      "Where do you tend to look for courage — yourself, other people, or God? What does that usually get you?",
+      "What's one obedient step you could take this week even while the fear is still there?"
+    ]
+  },
+  es: {
+    ref: "Josué 1:9",
+    verse: "“Mira que te mando que te esfuerces y seas valiente; no temas ni desmayes, porque Jehová tu Dios estará contigo en dondequiera que vayas.”",
+    title: "El Miedo No Tiene la Última Palabra",
+    body: [
+      "Josué no era un novato. Había visto a Moisés partir un mar y aun así sintió que el suelo temblaba cuando le tocó liderar a él.",
+      "Dios no le dice que el miedo es irracional. Le dice qué hacer con él: sé fuerte, sé valiente, no dejes que te controle.",
+      "Fíjate en la razón que le da — no “eres suficientemente capaz,” sino “yo estaré contigo dondequiera que vayas.” El mandato descansa completamente en la presencia, no en el desempeño.",
+      "Cada hombre en este grupo carga una versión del miedo de Josué — una decisión, un diagnóstico, una conversación que ha estado evitando, un futuro cuya forma no puede ver.",
+      "<strong>Hermanos, el valor nunca fue la ausencia del miedo. Es obediencia a pesar de él.</strong>",
+      "No necesitas que el miedo se vaya antes de moverte. Necesitas saber quién se mueve contigo."
+    ],
+    questions: [
+      "¿Qué es lo específico de lo que el miedo te está convenciendo de no hacer ahora mismo?",
+      "¿Dónde sueles buscar valentía — en ti mismo, en otras personas, o en Dios? ¿Qué resultado te suele dar eso?",
+      "¿Cuál sería un paso de obediencia que podrías dar esta semana aun con el miedo todavía presente?"
+    ]
+  },
+  pt: {
+    ref: "Josué 1:9",
+    verse: "“Não to mandei eu? Esforça-te e tem bom ânimo; não temas, nem te espantes, porque o Senhor teu Deus é contigo, por onde quer que andares.”",
+    title: "O Medo Não Tem a Última Palavra",
+    body: [
+      "Josué não era um novato. Ele tinha visto Moisés dividir um mar e ainda assim sentiu o chão tremer quando chegou a sua vez de liderar.",
+      "Deus não diz a ele que o medo é irracional. Diz o que fazer com ele: seja forte, tenha bom ânimo, não deixe que ele te controle.",
+      "Repare na razão dada — não “você é capaz o suficiente,” mas “eu estarei com você por onde quer que andares.” A ordem repousa inteiramente na presença, não no desempenho.",
+      "Todo homem neste grupo carrega uma versão do medo de Josué — uma decisão, um diagnóstico, uma conversa que tem evitado, um futuro cujo formato não consegue ver.",
+      "<strong>Irmãos, coragem nunca foi a ausência do medo. É obediência apesar dele.</strong>",
+      "Você não precisa que o medo vá embora antes de se mover. Precisa saber quem se move com você."
+    ],
+    questions: [
+      "Do que especificamente o medo está tentando te convencer a desistir agora?",
+      "Onde você costuma buscar coragem — em si mesmo, em outras pessoas, ou em Deus? O que isso geralmente resulta?",
+      "Qual seria um passo de obediência que você poderia dar esta semana mesmo com o medo ainda presente?"
+    ]
+  }
+},
+{
+  id: "purpose",
+  en: {
+    ref: "Ephesians 2:10",
+    verse: "“For we are his workmanship, created in Christ Jesus for good works, which God prepared beforehand, that we should walk in them.”",
+    title: "You Were Made, Not Manufactured",
+    body: [
+      "Most men build identity out of output — what they produce, earn, fix, win. Take the output away and the man underneath starts to wonder if he's still worth anything.",
+      "Paul says something different: you are His workmanship. Not your workmanship. His. The word is poiema — the same root as “poem.” You are something crafted, not something that crafted itself.",
+      "And the good works come after the identity, not before it. He didn't wait to see what you'd produce before deciding you were worth making. The purpose was prepared in advance, for a man already declared valuable.",
+      "This flips the pressure. You're not working to become someone. You're working from already being someone.",
+      "<strong>Brothers, your worth was settled before your résumé started.</strong>",
+      "Walk in the work prepared for you — but stop mistaking the work for the reason you matter."
+    ],
+    questions: [
+      "Where have you been building your identity on what you produce instead of who you are in Christ?",
+      "What happens to your sense of worth when the output stops — a layoff, an injury, a failure?",
+      "What would it look like this week to work from identity instead of for it?"
+    ]
+  },
+  es: {
+    ref: "Efesios 2:10",
+    verse: "“Porque somos hechura suya, creados en Cristo Jesús para buenas obras, las cuales Dios preparó de antemano para que anduviésemos en ellas.”",
+    title: "Fuiste Hecho, No Fabricado",
+    body: [
+      "La mayoría de los hombres construyen su identidad sobre lo que producen — lo que ganan, arreglan, logran. Quítales eso y el hombre debajo empieza a preguntarse si todavía vale algo.",
+      "Pablo dice algo diferente: eres hechura suya. No tu propia obra. La suya. La palabra griega es poiema — la misma raíz de “poema.” Eres algo creado con propósito, no algo que se fabricó a sí mismo.",
+      "Y las buenas obras vienen después de la identidad, no antes. Dios no esperó a ver qué producirías para decidir que valías la pena. El propósito fue preparado de antemano, para un hombre ya declarado valioso.",
+      "Esto invierte la presión. No estás trabajando para convertirte en alguien. Estás trabajando desde el hecho de ya serlo.",
+      "<strong>Hermanos, tu valor quedó establecido antes de que empezara tu currículum.</strong>",
+      "Camina en la obra preparada para ti — pero deja de confundir la obra con la razón de tu valor."
+    ],
+    questions: [
+      "¿Dónde has estado construyendo tu identidad sobre lo que produces en lugar de quién eres en Cristo?",
+      "¿Qué le pasa a tu sentido de valor cuando la producción se detiene — un despido, una lesión, un fracaso?",
+      "¿Cómo se vería esta semana trabajar desde la identidad en lugar de trabajar para conseguirla?"
+    ]
+  },
+  pt: {
+    ref: "Efésios 2:10",
+    verse: "“Porque somos feitura sua, criados em Cristo Jesus para as boas obras, as quais Deus preparou para que andássemos nelas.”",
+    title: "Você Foi Feito, Não Fabricado",
+    body: [
+      "A maioria dos homens constrói identidade em cima do que produz — o que ganha, conserta, conquista. Tire isso e o homem por baixo começa a se perguntar se ainda vale alguma coisa.",
+      "Paulo diz algo diferente: você é feitura dele. Não sua própria obra. Dele. A palavra grega é poiema — a mesma raiz de “poema.” Você é algo criado com propósito, não algo que se fabricou sozinho.",
+      "E as boas obras vêm depois da identidade, não antes. Deus não esperou para ver o que você produziria antes de decidir que você valia a pena. O propósito foi preparado de antemão, para um homem já declarado valioso.",
+      "Isso inverte a pressão. Você não está trabalhando para se tornar alguém. Está trabalhando a partir do fato de já ser.",
+      "<strong>Irmãos, o seu valor foi definido antes do seu currículo começar.</strong>",
+      "Ande na obra preparada para você — mas pare de confundir a obra com o motivo pelo qual você importa."
+    ],
+    questions: [
+      "Onde você tem construído sua identidade no que produz em vez de quem você é em Cristo?",
+      "O que acontece com o seu senso de valor quando a produção para — uma demissão, uma lesão, um fracasso?",
+      "Como seria esta semana trabalhar a partir da identidade em vez de trabalhar para conquistá-la?"
+    ]
+  }
+},
+{
+  id: "integrity",
+  en: {
+    ref: "Proverbs 10:9",
+    verse: "“Whoever walks in integrity walks securely, but he who makes his ways crooked will be found out.”",
+    title: "The Man You Are When No One's Watching",
+    body: [
+      "Integrity isn't a personality trait. It's what's left when performance stops paying off.",
+      "Solomon puts it plainly: the crooked man will be found out. Not might be. Will be. Every shortcut, every half-truth, every version of yourself you only show in certain rooms — it surfaces eventually.",
+      "The word translated “integrity” means wholeness — one man, not two. The guy at church and the guy at work and the guy alone at midnight are supposed to be the same guy.",
+      "Security doesn't come from never being caught. It comes from having nothing to catch. That's a different kind of freedom than most men are chasing.",
+      "<strong>Brothers, who you are alone is who you actually are.</strong>",
+      "Walk straight — not because you'll get exposed if you don't, but because a divided man never actually rests."
+    ],
+    questions: [
+      "Where's the biggest gap between the man other people see and the man you are alone?",
+      "What's it costing you to keep managing that gap?",
+      "What's one specific area where you could close it this week?"
+    ]
+  },
+  es: {
+    ref: "Proverbios 10:9",
+    verse: "“El que camina en integridad anda confiado; mas el que pervierte sus caminos será quebrantado.”",
+    title: "El Hombre Que Eres Cuando Nadie Te Ve",
+    body: [
+      "La integridad no es un rasgo de personalidad. Es lo que queda cuando el desempeño deja de dar resultado.",
+      "Salomón lo deja claro: el que tuerce sus caminos será descubierto. No “podría ser.” Será. Cada atajo, cada media verdad, cada versión de ti mismo que solo muestras en ciertos lugares — sale a la luz tarde o temprano.",
+      "La palabra traducida “integridad” significa entereza — un solo hombre, no dos. El hombre de la iglesia y el hombre del trabajo y el hombre solo a medianoche deberían ser el mismo hombre.",
+      "La seguridad no viene de nunca ser descubierto. Viene de no tener nada que descubrir. Esa es una libertad diferente a la que la mayoría de los hombres persigue.",
+      "<strong>Hermanos, quien eres a solas es quien realmente eres.</strong>",
+      "Camina derecho — no porque te expondrán si no lo haces, sino porque un hombre dividido nunca descansa de verdad."
+    ],
+    questions: [
+      "¿Dónde está la brecha más grande entre el hombre que otros ven y el hombre que eres a solas?",
+      "¿Qué te está costando mantener esa brecha?",
+      "¿Cuál sería un área específica donde podrías cerrarla esta semana?"
+    ]
+  },
+  pt: {
+    ref: "Provérbios 10:9",
+    verse: "“Quem anda em integridade anda seguro, mas o que perverte os seus caminhos será conhecido.”",
+    title: "O Homem Que Você É Quando Ninguém Está Vendo",
+    body: [
+      "Integridade não é um traço de personalidade. É o que sobra quando o desempenho para de compensar.",
+      "Salomão é direto: o que torce seus caminhos será descoberto. Não “pode ser.” Será. Cada atalho, cada meia verdade, cada versão de você que só aparece em certos lugares — vem à tona mais cedo ou mais tarde.",
+      "A palavra traduzida “integridade” significa inteireza — um homem só, não dois. O homem da igreja e o homem do trabalho e o homem sozinho à meia-noite deveriam ser o mesmo homem.",
+      "Segurança não vem de nunca ser pego. Vem de não ter nada a esconder. Essa é uma liberdade diferente da que a maioria dos homens persegue.",
+      "<strong>Irmãos, quem você é sozinho é quem você realmente é.</strong>",
+      "Ande reto — não porque será exposto se não andar, mas porque um homem dividido nunca descansa de verdade."
+    ],
+    questions: [
+      "Onde está a maior diferença entre o homem que os outros veem e o homem que você é sozinho?",
+      "O que está custando manter essa diferença?",
+      "Qual seria uma área específica em que você poderia fechá-la esta semana?"
+    ]
+  }
+},
+{
+  id: "fatherhood",
+  en: {
+    ref: "Deuteronomy 6:6-7",
+    verse: "“These words that I command you today shall be on your heart. You shall teach them diligently to your children, and shall talk of them when you sit in your house, and when you walk by the way…”",
+    title: "More Is Caught Than Taught",
+    body: [
+      "Moses doesn't tell fathers to schedule a lesson. He tells them to talk about God while they're driving, while they're working, while they're just living — because that's where kids actually learn what's real.",
+      "Notice the order: the words have to be on your heart first. You cannot hand your kids a faith you don't actually carry. They will catch the real thing or the performance — never the one you announce and don't live.",
+      "This isn't about getting it perfect. It's about being honest in front of them — praying when you don't have answers, apologizing when you're wrong, trusting God out loud when it's hard.",
+      "Your kids are not primarily watching your sermons. They're watching your Tuesdays.",
+      "<strong>Brothers, the faith you actually have is the faith they'll actually inherit.</strong>",
+      "Talk about Him in the ordinary moments. That's where it takes root."
+    ],
+    questions: [
+      "What do your kids actually see you do with your faith on an ordinary Tuesday?",
+      "Where is there a gap between what you tell them to believe and what they watch you live?",
+      "What's one ordinary moment this week where you could talk about God out loud with them?"
+    ]
+  },
+  es: {
+    ref: "Deuteronomio 6:6-7",
+    verse: "“Y estas palabras que yo te mando hoy, estarán sobre tu corazón; y las repetirás a tus hijos, y hablarás de ellas estando en tu casa, y andando por el camino…”",
+    title: "Se Contagia Más de lo que se Enseña",
+    body: [
+      "Moisés no les dice a los padres que programen una lección. Les dice que hablen de Dios mientras manejan, mientras trabajan, mientras simplemente viven — porque ahí es donde los hijos realmente aprenden qué es real.",
+      "Fíjate en el orden: las palabras tienen que estar primero sobre tu corazón. No puedes entregarles a tus hijos una fe que tú mismo no cargas. Ellos captarán lo genuino o la actuación — nunca lo que anuncias y no vives.",
+      "Esto no se trata de hacerlo perfecto. Se trata de ser honesto delante de ellos — orar cuando no tienes respuestas, pedir perdón cuando te equivocas, confiar en Dios en voz alta cuando es difícil.",
+      "Tus hijos no están observando principalmente tus sermones. Están observando tus martes.",
+      "<strong>Hermanos, la fe que realmente tienes es la fe que ellos realmente heredarán.</strong>",
+      "Habla de Él en los momentos ordinarios. Ahí es donde echa raíces."
+    ],
+    questions: [
+      "¿Qué ven realmente tus hijos que haces con tu fe en un martes cualquiera?",
+      "¿Dónde hay una brecha entre lo que les dices que crean y lo que te ven vivir?",
+      "¿Cuál sería un momento ordinario esta semana donde podrías hablar de Dios en voz alta con ellos?"
+    ]
+  },
+  pt: {
+    ref: "Deuteronômio 6:6-7",
+    verse: "“E estas palavras que hoje te ordeno estarão no teu coração; e as ensinarás a teus filhos, e delas falarás assentado em tua casa, e andando pelo caminho…”",
+    title: "Mais se Contagia do que se Ensina",
+    body: [
+      "Moisés não diz aos pais para agendar uma lição. Diz para falarem de Deus enquanto dirigem, enquanto trabalham, enquanto simplesmente vivem — porque é aí que os filhos realmente aprendem o que é real.",
+      "Repare na ordem: as palavras precisam estar primeiro no seu coração. Você não pode entregar aos seus filhos uma fé que você mesmo não carrega. Eles vão captar o genuíno ou a atuação — nunca o que você anuncia e não vive.",
+      "Isso não é sobre fazer perfeito. É sobre ser honesto na frente deles — orar quando não tem respostas, pedir desculpas quando erra, confiar em Deus em voz alta quando é difícil.",
+      "Seus filhos não estão observando principalmente seus sermões. Estão observando suas terças-feiras.",
+      "<strong>Irmãos, a fé que você realmente tem é a fé que eles realmente vão herdar.</strong>",
+      "Fale d'Ele nos momentos comuns. É ali que ela cria raízes."
+    ],
+    questions: [
+      "O que seus filhos realmente veem você fazer com sua fé em uma terça-feira comum?",
+      "Onde há uma diferença entre o que você diz para eles acreditarem e o que eles veem você viver?",
+      "Qual seria um momento comum esta semana em que você poderia falar de Deus em voz alta com eles?"
+    ]
+  }
+},
+{
+  id: "temptation",
+  en: {
+    ref: "1 Corinthians 10:13",
+    verse: "“No temptation has overtaken you that is not common to man. God is faithful, and he will not let you be tempted beyond your ability, but with the temptation he will also provide the way of escape…”",
+    title: "The Door Is Already There",
+    body: [
+      "Whatever's pulling at you right now, someone else in this room has stood exactly where you're standing. You're not uniquely broken. You're commonly tempted.",
+      "Paul doesn't promise the temptation will vanish. He promises two things: it won't exceed what you can bear, and there will be a way out. Both things — every time.",
+      "The problem usually isn't that the exit doesn't exist. It's that we're standing too close to the fire to look for it. The way out is easiest to find before you're already halfway through the door.",
+      "This means the moment of decision isn't really in the moment of temptation. It's earlier — in what you set up beforehand, who you told, what you avoided.",
+      "<strong>Brothers, the exit is real. You just have to be looking for it before you need it.</strong>",
+      "Plan the escape now, while you're clear-headed, not later, while you're not."
+    ],
+    questions: [
+      "What's the temptation that shows up for you most predictably?",
+      "Where do you usually look for the way out — or do you not look at all?",
+      "What's one thing you could set up in advance this week to make the exit easier to find next time?"
+    ]
+  },
+  es: {
+    ref: "1 Corintios 10:13",
+    verse: "“No os ha sobrevenido ninguna tentación que no sea humana; pero fiel es Dios, que no os dejará ser tentados más de lo que podéis resistir, sino que dará también juntamente con la tentación la salida…”",
+    title: "La Salida Ya Está Ahí",
+    body: [
+      "Lo que sea que te esté jalando ahora mismo, alguien más en este grupo ha estado exactamente donde tú estás. No estás roto de manera única. Estás siendo tentado de manera común.",
+      "Pablo no promete que la tentación desaparecerá. Promete dos cosas: no excederá lo que puedes soportar, y habrá una salida. Ambas cosas — siempre.",
+      "El problema usualmente no es que la salida no exista. Es que estamos parados demasiado cerca del fuego para buscarla. La salida es más fácil de encontrar antes de que ya estés a medio camino por la puerta.",
+      "Esto significa que el momento de la decisión realmente no está en el momento de la tentación. Está antes — en lo que preparaste de antemano, a quién le contaste, qué evitaste.",
+      "<strong>Hermanos, la salida es real. Solo tienes que estar buscándola antes de necesitarla.</strong>",
+      "Planea el escape ahora, mientras tienes la cabeza clara, no después, cuando ya no la tengas."
+    ],
+    questions: [
+      "¿Cuál es la tentación que aparece más predeciblemente para ti?",
+      "¿Dónde sueles buscar la salida — o simplemente no la buscas?",
+      "¿Qué podrías preparar de antemano esta semana para que la salida sea más fácil de encontrar la próxima vez?"
+    ]
+  },
+  pt: {
+    ref: "1 Coríntios 10:13",
+    verse: "“Não veio sobre vós tentação, senão humana; mas fiel é Deus, que não vos deixará tentar acima do que podeis suportar, antes com a tentação dará também o escape…”",
+    title: "A Saída Já Está Ali",
+    body: [
+      "O que quer que esteja te puxando agora, alguém mais neste grupo já esteve exatamente onde você está. Você não é unicamente quebrado. Você é comumente tentado.",
+      "Paulo não promete que a tentação vai desaparecer. Promete duas coisas: ela não vai ultrapassar o que você pode suportar, e vai haver uma saída. Ambas — sempre.",
+      "O problema geralmente não é que a saída não exista. É que estamos perto demais do fogo para procurá-la. A saída é mais fácil de encontrar antes de você já estar no meio da porta.",
+      "Isso significa que o momento da decisão não está realmente no momento da tentação. Está antes — no que você preparou de antemão, para quem você contou, o que você evitou.",
+      "<strong>Irmãos, a saída é real. Você só precisa estar procurando por ela antes de precisar dela.</strong>",
+      "Planeje a fuga agora, com a cabeça no lugar, não depois, quando já não estiver."
+    ],
+    questions: [
+      "Qual é a tentação que aparece de forma mais previsível para você?",
+      "Onde você costuma procurar a saída — ou você simplesmente não procura?",
+      "O que você poderia preparar de antemão esta semana para que a saída seja mais fácil de encontrar da próxima vez?"
+    ]
+  }
+},
+{
+  id: "forgiveness",
+  en: {
+    ref: "Colossians 3:13",
+    verse: "“Bearing with one another and, if one has a complaint against another, forgiving each other; as the Lord has forgiven you, so you also must forgive.”",
+    title: "The Debt You Were Never Going to Pay",
+    body: [
+      "Unforgiveness feels like leverage. It isn't. It's a debt you keep collecting on that never gets you a single thing back.",
+      "Paul's standard isn't “forgive when it feels fair.” It's “as the Lord forgave you.” That's the whole bar — measured against a debt you could never have repaid, cancelled anyway.",
+      "This doesn't mean pretending the wound wasn't real. Paul says bear with one another first — acknowledge the friction is real — and then forgive. Forgiveness isn't denial. It's a decision made in full view of the offense.",
+      "Holding the grudge doesn't punish the other man nearly as much as it cages you. You're the one carrying it every day.",
+      "<strong>Brothers, you were forgiven a debt you couldn't pay. Extend what you received.</strong>",
+      "Forgiving doesn't mean the relationship goes back to what it was. It means you stop being the jailer."
+    ],
+    questions: [
+      "Who are you still holding a debt against?",
+      "What has carrying that grudge actually cost you?",
+      "What would one step toward release look like this week — even if reconciliation isn't possible?"
+    ]
+  },
+  es: {
+    ref: "Colosenses 3:13",
+    verse: "“Soportándoos unos a otros, y perdonándoos unos a otros si alguno tuviere queja contra otro. De la manera que Cristo os perdonó, así también hacedlo vosotros.”",
+    title: "La Deuda Que Nunca Ibas a Pagar",
+    body: [
+      "El resentimiento se siente como poder. No lo es. Es una deuda que sigues cobrando y que nunca te devuelve nada.",
+      "El estándar de Pablo no es “perdona cuando se sienta justo.” Es “de la manera que Cristo te perdonó.” Esa es toda la vara — medida contra una deuda que nunca podrías haber pagado, cancelada de todos modos.",
+      "Esto no significa fingir que la herida no fue real. Pablo dice primero soportaos unos a otros — reconoce que la fricción es real — y luego perdona. Perdonar no es negar. Es una decisión tomada con plena consciencia de la ofensa.",
+      "Guardar el rencor no castiga tanto al otro hombre como te enjaula a ti. Tú eres quien lo carga todos los días.",
+      "<strong>Hermanos, se les perdonó una deuda que no podían pagar. Extiendan lo que recibieron.</strong>",
+      "Perdonar no significa que la relación vuelva a ser lo que era. Significa que dejas de ser el carcelero."
+    ],
+    questions: [
+      "¿A quién todavía le tienes una deuda pendiente?",
+      "¿Qué te ha costado realmente cargar ese rencor?",
+      "¿Cómo se vería un paso hacia soltarlo esta semana — aunque la reconciliación no sea posible?"
+    ]
+  },
+  pt: {
+    ref: "Colossenses 3:13",
+    verse: "“Suportando-vos uns aos outros, e perdoando-vos uns aos outros, se alguém tiver queixa contra outro; assim como Cristo vos perdoou, assim fazei vós também.”",
+    title: "A Dívida Que Você Nunca Ia Pagar",
+    body: [
+      "O ressentimento parece poder. Não é. É uma dívida que você continua cobrando e que nunca te devolve nada.",
+      "O padrão de Paulo não é “perdoe quando parecer justo.” É “assim como Cristo te perdoou.” Essa é toda a régua — medida contra uma dívida que você nunca poderia ter pago, cancelada mesmo assim.",
+      "Isso não significa fingir que a ferida não foi real. Paulo diz primeiro suportai-vos uns aos outros — reconheça que o atrito é real — e depois perdoe. Perdoar não é negação. É uma decisão tomada com plena consciência da ofensa.",
+      "Guardar rancor não pune tanto o outro homem quanto te enjaula. Você é quem carrega isso todos os dias.",
+      "<strong>Irmãos, vocês foram perdoados de uma dívida que não podiam pagar. Estendam o que receberam.</strong>",
+      "Perdoar não significa que a relação volte a ser o que era. Significa que você para de ser o carcereiro."
+    ],
+    questions: [
+      "A quem você ainda cobra uma dívida?",
+      "O que carregar esse rancor realmente tem custado a você?",
+      "Como seria um passo em direção a soltar isso esta semana — mesmo que a reconciliação não seja possível?"
+    ]
+  }
+},
+{
+  id: "trials",
+  en: {
+    ref: "James 1:2-4",
+    verse: "“Count it all joy, my brothers, when you meet trials of various kinds, for you know that the testing of your faith produces steadfastness. And let steadfastness have its full effect, that you may be perfect and complete, lacking in nothing.”",
+    title: "Let It Finish What It's Doing",
+    body: [
+      "James doesn't say trials are joyful. He says count them as joy — a decision, not a feeling, made because of what's on the other side.",
+      "Testing produces steadfastness — but only if you let it run its course. Most men bail halfway through the process, and then wonder why the same trial keeps showing up in a different outfit.",
+      "“Let steadfastness have its full effect” implies you can interrupt it. You can shortcut the trial, numb it, escape it — and walk away with nothing built.",
+      "The goal was never comfort. It's completeness — lacking in nothing. That only comes from finishing what the trial started.",
+      "<strong>Brothers, don't waste the trial by rushing to end it.</strong>",
+      "Ask what it's building in you, not just when it'll be over."
+    ],
+    questions: [
+      "What trial are you currently in the middle of, and what's your instinct — escape it or let it finish?",
+      "Have you seen a pattern of the same test repeating because you cut a previous one short?",
+      "What would it look like to let this one run its full course instead of rushing the exit?"
+    ]
+  },
+  es: {
+    ref: "Santiago 1:2-4",
+    verse: "“Tened por sumo gozo, hermanos míos, cuando os halléis en diversas pruebas, sabiendo que la prueba de vuestra fe produce paciencia. Mas tenga la paciencia su obra completa, para que seáis perfectos y cabales, sin que os falte cosa alguna.”",
+    title: "Deja Que Termine lo Que Está Haciendo",
+    body: [
+      "Santiago no dice que las pruebas sean gozosas. Dice que las tengas por gozo — una decisión, no un sentimiento, tomada por lo que hay del otro lado.",
+      "La prueba produce paciencia — pero solo si dejas que siga su curso. La mayoría de los hombres abandonan a mitad del proceso, y luego se preguntan por qué la misma prueba sigue apareciendo con otro disfraz.",
+      "“Tenga la paciencia su obra completa” implica que puedes interrumpirla. Puedes acortar la prueba, adormecerla, escaparte de ella — y salir sin nada construido.",
+      "La meta nunca fue la comodidad. Es la plenitud — sin que te falte nada. Eso solo viene de terminar lo que la prueba empezó.",
+      "<strong>Hermanos, no desperdicien la prueba apurándose a terminarla.</strong>",
+      "Pregunta qué está construyendo en ti, no solo cuándo va a terminar."
+    ],
+    questions: [
+      "¿En qué prueba estás en medio ahora mismo, y cuál es tu instinto — escaparte o dejarla terminar?",
+      "¿Has visto un patrón de la misma prueba repitiéndose porque cortaste una anterior antes de tiempo?",
+      "¿Cómo se vería dejar que esta siga su curso completo en lugar de apurar la salida?"
+    ]
+  },
+  pt: {
+    ref: "Tiago 1:2-4",
+    verse: "“Meus irmãos, tende grande gozo quando cairdes em várias tentações, sabendo que a prova da vossa fé produz a paciência. Tenha, porém, a paciência a obra perfeita, para que sejais perfeitos e completos, sem faltar em nada.”",
+    title: "Deixe Terminar o Que Está Fazendo",
+    body: [
+      "Tiago não diz que as provações são alegres. Diz para você as ter por alegria — uma decisão, não um sentimento, tomada por causa do que existe do outro lado.",
+      "A prova produz paciência — mas só se você deixar seguir seu curso. A maioria dos homens desiste no meio do processo, e depois se pergunta por que a mesma prova continua aparecendo com outra roupa.",
+      "“Tenha a paciência a obra perfeita” implica que você pode interrompê-la. Você pode encurtar a prova, anestesiá-la, escapar dela — e sair sem nada construído.",
+      "O objetivo nunca foi conforto. É plenitude — sem faltar em nada. Isso só vem de terminar o que a prova começou.",
+      "<strong>Irmãos, não desperdicem a prova se apressando para terminá-la.</strong>",
+      "Pergunte o que ela está construindo em você, não só quando vai acabar."
+    ],
+    questions: [
+      "Em qual prova você está no meio agora, e qual é o seu instinto — escapar dela ou deixá-la terminar?",
+      "Você já viu um padrão da mesma prova se repetindo porque cortou uma anterior antes da hora?",
+      "Como seria deixar esta seguir seu curso completo em vez de apressar a saída?"
+    ]
+  }
+},
+{
+  id: "servant-leadership",
+  en: {
+    ref: "Mark 10:42-45",
+    verse: "“Whoever would be great among you must be your servant… For even the Son of Man came not to be served but to serve, and to give his life as a ransom for many.”",
+    title: "Lead From the Bottom of the Ladder",
+    body: [
+      "James and John had just asked for the best seats in the kingdom. Jesus's answer wasn't a rebuke about ambition — it was a redefinition of greatness.",
+      "Every worldly model of leadership runs on being served. Jesus flips it without apology: greatness is measured by how low you're willing to go for other people.",
+      "He didn't just teach this. He modeled it to the point of dying for the people He led. That's not a leadership tip. That's the whole shape of the kingdom.",
+      "Most men lead to be noticed. Jesus led to serve people who couldn't repay Him.",
+      "<strong>Brothers, the size of the towel you're willing to pick up is the size of the leader you actually are.</strong>",
+      "Wherever you lead — your home, your job, your team — ask what serving there would actually cost you, and do it anyway."
+    ],
+    questions: [
+      "Where in your life are you leading to be served rather than to serve?",
+      "What would it look like to serve the people under your leadership in a way that costs you something?",
+      "Who around you needs you to pick up a towel this week?"
+    ]
+  },
+  es: {
+    ref: "Marcos 10:42-45",
+    verse: "“El que quiera hacerse grande entre vosotros será vuestro servidor… Porque el Hijo del Hombre no vino para ser servido, sino para servir, y para dar su vida en rescate por muchos.”",
+    title: "Lidera Desde el Último Peldaño",
+    body: [
+      "Jacobo y Juan acababan de pedir los mejores asientos en el reino. La respuesta de Jesús no fue un regaño sobre la ambición — fue una redefinición de la grandeza.",
+      "Todo modelo mundano de liderazgo se basa en ser servido. Jesús lo invierte sin disculparse: la grandeza se mide por cuánto estás dispuesto a rebajarte por otras personas.",
+      "Él no solo enseñó esto. Lo modeló hasta morir por la gente que lideraba. Eso no es un consejo de liderazgo. Es toda la forma del reino.",
+      "La mayoría de los hombres lideran para ser notados. Jesús lideró para servir a gente que no podía pagarle.",
+      "<strong>Hermanos, el tamaño de la toalla que estás dispuesto a recoger es el tamaño del líder que realmente eres.</strong>",
+      "Donde sea que lideres — tu hogar, tu trabajo, tu equipo — pregúntate qué te costaría servir ahí, y hazlo de todos modos."
+    ],
+    questions: [
+      "¿Dónde en tu vida estás liderando para ser servido en lugar de servir?",
+      "¿Cómo se vería servir a las personas bajo tu liderazgo de una manera que te cueste algo?",
+      "¿Quién a tu alrededor necesita que tomes una toalla esta semana?"
+    ]
+  },
+  pt: {
+    ref: "Marcos 10:42-45",
+    verse: "“Qualquer que entre vós quiser ser grande, será o que vos sirva… Porque o Filho do Homem também não veio para ser servido, mas para servir, e para dar a sua vida em resgate de muitos.”",
+    title: "Lidere a Partir do Último Degrau",
+    body: [
+      "Tiago e João tinham acabado de pedir os melhores lugares no reino. A resposta de Jesus não foi uma repreensão sobre ambição — foi uma redefinição de grandeza.",
+      "Todo modelo mundano de liderança funciona sendo servido. Jesus inverte isso sem pedir desculpas: grandeza se mede por quanto você está disposto a se abaixar por outras pessoas.",
+      "Ele não apenas ensinou isso. Ele modelou até morrer pelas pessoas que liderava. Isso não é uma dica de liderança. É toda a forma do reino.",
+      "A maioria dos homens lidera para ser notada. Jesus liderou para servir pessoas que não podiam retribuir.",
+      "<strong>Irmãos, o tamanho da toalha que você está disposto a pegar é o tamanho do líder que você realmente é.</strong>",
+      "Onde quer que você lidere — sua casa, seu trabalho, sua equipe — pergunte o que servir custaria a você, e faça assim mesmo."
+    ],
+    questions: [
+      "Onde na sua vida você está liderando para ser servido em vez de servir?",
+      "Como seria servir as pessoas sob sua liderança de um jeito que custe algo a você?",
+      "Quem ao seu redor precisa que você pegue uma toalha esta semana?"
+    ]
+  }
+},
+{
+  id: "contentment",
+  en: {
+    ref: "Philippians 4:11-13",
+    verse: "“I have learned, in whatever situation I am, to be content… I can do all things through him who strengthens me.”",
+    title: "Contentment Is Learned, Not Found",
+    body: [
+      "Paul wrote this from prison. Not from abundance looking down at scarcity — from scarcity itself, having already known abundance and lost it.",
+      "He says learned, not felt. Contentment isn't a personality some men are born with and others aren't. It's a skill built through repetition, usually in seasons that don't feel like a classroom.",
+      "Verse 13 gets pulled out for ambition all the time — “I can do all things.” But read in context, it's about enduring want. The strength Paul's talking about is the strength to be content in less, not the strength to achieve more.",
+      "That reframes the verse most men have memorized backwards. It's not a promise of success. It's a promise of sufficiency.",
+      "<strong>Brothers, the skill isn't getting more. It's needing less.</strong>",
+      "Whatever situation you're in right now, ask God for the strength to be content in it — not just delivered from it."
+    ],
+    questions: [
+      "Where are you currently chasing more instead of learning contentment in what you have?",
+      "What season of lack has actually taught you the most about God's sufficiency?",
+      "What would it look like this week to practice being content, not just hoping the circumstances change?"
+    ]
+  },
+  es: {
+    ref: "Filipenses 4:11-13",
+    verse: "“He aprendido a contentarme, cualquiera que sea mi situación… Todo lo puedo en Cristo que me fortalece.”",
+    title: "El Contentamiento se Aprende, No se Encuentra",
+    body: [
+      "Pablo escribió esto desde la prisión. No desde la abundancia mirando hacia la escasez — desde la escasez misma, habiendo ya conocido la abundancia y perdido.",
+      "Dice “he aprendido,” no “he sentido.” El contentamiento no es una personalidad con la que algunos hombres nacen y otros no. Es una habilidad construida a través de la repetición, usualmente en temporadas que no se sienten como un aula.",
+      "El versículo 13 se saca constantemente para hablar de ambición — “todo lo puedo.” Pero leído en contexto, se trata de soportar la carencia. La fuerza de la que Pablo habla es la fuerza para estar contento con menos, no la fuerza para lograr más.",
+      "Eso reformula el versículo que la mayoría de los hombres han memorizado al revés. No es una promesa de éxito. Es una promesa de suficiencia.",
+      "<strong>Hermanos, la habilidad no es conseguir más. Es necesitar menos.</strong>",
+      "Cualquiera que sea tu situación ahora mismo, pídele a Dios la fuerza para estar contento en ella — no solo para ser librado de ella."
+    ],
+    questions: [
+      "¿Dónde estás persiguiendo más en lugar de aprender contentamiento con lo que tienes?",
+      "¿Qué temporada de carencia te ha enseñado realmente más sobre la suficiencia de Dios?",
+      "¿Cómo se vería esta semana practicar el contentamiento, en lugar de solo esperar que las circunstancias cambien?"
+    ]
+  },
+  pt: {
+    ref: "Filipenses 4:11-13",
+    verse: "“Aprendi a contentar-me, seja qual for a minha situação… Tudo posso naquele que me fortalece.”",
+    title: "Contentamento se Aprende, Não se Encontra",
+    body: [
+      "Paulo escreveu isso a partir da prisão. Não da abundância olhando para a escassez — da própria escassez, já tendo conhecido a abundância e perdido.",
+      "Ele diz “aprendi,” não “senti.” Contentamento não é uma personalidade com a qual alguns homens nascem e outros não. É uma habilidade construída pela repetição, geralmente em temporadas que não parecem uma sala de aula.",
+      "O versículo 13 é tirado do contexto o tempo todo para falar de ambição — “tudo posso.” Mas lido no contexto, é sobre suportar a carência. A força de que Paulo fala é a força para estar contente com menos, não a força para conquistar mais.",
+      "Isso reformula o versículo que a maioria dos homens memorizou ao contrário. Não é uma promessa de sucesso. É uma promessa de suficiência.",
+      "<strong>Irmãos, a habilidade não é conseguir mais. É precisar de menos.</strong>",
+      "Seja qual for a sua situação agora, peça a Deus força para estar contente nela — não apenas para ser livrado dela."
+    ],
+    questions: [
+      "Onde você está buscando mais em vez de aprender contentamento com o que tem?",
+      "Qual temporada de carência realmente mais te ensinou sobre a suficiência de Deus?",
+      "Como seria esta semana praticar contentamento, em vez de só esperar que as circunstâncias mudem?"
+    ]
+  }
+},
+{
+  id: "faithfulness",
+  en: {
+    ref: "Luke 16:10",
+    verse: "“One who is faithful in a very little is also faithful in much, and one who is dishonest in a very little is also dishonest in much.”",
+    title: "The Small Thing Is the Real Test",
+    body: [
+      "Every man wants the big assignment. Few men are faithful in the boring one.",
+      "Jesus says the two are linked — not sequential, linked. The way you handle the small, unnoticed thing is a preview of exactly how you'd handle the large, visible one. Character doesn't upgrade when the stakes do.",
+      "This should terrify and free you at the same time. Terrify, because there's nowhere to hide — the way you drive when no one's watching, the way you talk about your boss, the receipts you fudge. Free, because faithfulness right now, in the small unnoticed thing, is already building the man who can carry the big thing later.",
+      "Most men are waiting for a bigger platform before they get serious about integrity. Jesus says the platform was never the point. The small thing is the test.",
+      "<strong>Brothers, stop waiting for the big moment to prove your character. You're building it right now.</strong>",
+      "Be faithful in what's in front of you today, however small it looks."
+    ],
+    questions: [
+      "What's the “very little” thing in your life right now where you're tempted to cut corners?",
+      "What pattern would someone see if they watched how you handle small, unnoticed responsibilities?",
+      "What's one small thing you can be deliberately faithful in this week?"
+    ]
+  },
+  es: {
+    ref: "Lucas 16:10",
+    verse: "“El que es fiel en lo muy poco, también en lo más es fiel; y el que en lo muy poco es injusto, también en lo más es injusto.”",
+    title: "Lo Pequeño Es la Prueba Real",
+    body: [
+      "Todo hombre quiere la gran asignación. Pocos hombres son fieles en la aburrida.",
+      "Jesús dice que las dos están conectadas — no en secuencia, conectadas. La manera en que manejas lo pequeño, lo que nadie nota, es una vista previa de exactamente cómo manejarías lo grande y visible. El carácter no se actualiza cuando suben las apuestas.",
+      "Esto debería aterrarte y liberarte al mismo tiempo. Aterrarte, porque no hay dónde esconderse — cómo manejas cuando nadie te ve, cómo hablas de tu jefe, los recibos que alteras. Liberarte, porque la fidelidad ahora mismo, en lo pequeño y desapercibido, ya está formando al hombre que podrá cargar lo grande después.",
+      "La mayoría de los hombres esperan una plataforma más grande antes de tomarse en serio la integridad. Jesús dice que la plataforma nunca fue el punto. Lo pequeño es la prueba.",
+      "<strong>Hermanos, dejen de esperar el gran momento para probar su carácter. Lo están construyendo ahora mismo.</strong>",
+      "Sean fieles en lo que tienen enfrente hoy, por pequeño que parezca."
+    ],
+    questions: [
+      "¿Cuál es la cosa “muy pequeña” en tu vida ahora mismo donde te tienta hacer trampa?",
+      "¿Qué patrón vería alguien si observara cómo manejas responsabilidades pequeñas y desapercibidas?",
+      "¿En qué cosa pequeña puedes ser deliberadamente fiel esta semana?"
+    ]
+  },
+  pt: {
+    ref: "Lucas 16:10",
+    verse: "“O que é fiel no pouco, também no muito é fiel; e o que é injusto no pouco, também no muito é injusto.”",
+    title: "O Pequeno É o Teste Real",
+    body: [
+      "Todo homem quer a grande missão. Poucos homens são fiéis na entediante.",
+      "Jesus diz que as duas estão ligadas — não em sequência, ligadas. A forma como você lida com o pequeno, o que ninguém percebe, é uma prévia exata de como você lidaria com o grande e visível. O caráter não se atualiza quando as apostas sobem.",
+      "Isso deveria te aterrorizar e te libertar ao mesmo tempo. Aterrorizar, porque não há onde se esconder — como você dirige quando ninguém está vendo, como fala do seu chefe, os recibos que você altera. Libertar, porque a fidelidade agora, no pequeno e despercebido, já está formando o homem que vai carregar o grande depois.",
+      "A maioria dos homens espera uma plataforma maior antes de levar a integridade a sério. Jesus diz que a plataforma nunca foi o ponto. O pequeno é o teste.",
+      "<strong>Irmãos, parem de esperar o grande momento para provar seu caráter. Vocês estão construindo isso agora mesmo.</strong>",
+      "Sejam fiéis no que está na sua frente hoje, por menor que pareça."
+    ],
+    questions: [
+      "Qual é a coisa “muito pequena” na sua vida agora em que você é tentado a cortar caminho?",
+      "Que padrão alguém veria se observasse como você lida com responsabilidades pequenas e despercebidas?",
+      "Em qual coisa pequena você pode ser deliberadamente fiel esta semana?"
+    ]
+  }
+},
+{
+  id: "marriage",
+  en: {
+    ref: "Ephesians 5:25",
+    verse: "“Husbands, love your wives, as Christ loved the church and gave himself up for her.”",
+    title: "Love Is a Verb With a Cross In It",
+    body: [
+      "Paul doesn't ask husbands to feel love. He commands them to do it — modeled on the most costly act in history.",
+      "Christ's love for the church wasn't comfortable, convenient, or reciprocated in the moment. He gave Himself up — first, fully, before any response came back. That's the standard. Not “love her if she loves you well.” Love her like Christ loved a church that was still failing Him.",
+      "Most men measure their marriage by what they're getting. Paul measures it by what they're giving up.",
+      "This isn't about grand gestures. It's daily — dying to your preferences, your schedule, your need to be right, for the sake of the woman across from you.",
+      "<strong>Brothers, love isn't a feeling you wait to return. It's a sacrifice you choose to make.</strong>",
+      "Ask not “is she loving me well” but “am I giving myself up for her like Christ did for me.”"
+    ],
+    questions: [
+      "Where in your marriage have you been waiting to feel loved before you act in love?",
+      "What would it look like this week to give something up for your wife without expecting anything back?",
+      "Is there a specific area of pride or preference you need to die to for her sake?"
+    ]
+  },
+  es: {
+    ref: "Efesios 5:25",
+    verse: "“Maridos, amad a vuestras mujeres, así como Cristo amó a la iglesia, y se entregó a sí mismo por ella.”",
+    title: "El Amor Es un Verbo Con una Cruz Adentro",
+    body: [
+      "Pablo no les pide a los esposos que sientan amor. Les manda que lo hagan — modelado en el acto más costoso de la historia.",
+      "El amor de Cristo por la iglesia no fue cómodo, conveniente, ni correspondido en el momento. Él se entregó a sí mismo — primero, completamente, antes de que llegara cualquier respuesta. Ese es el estándar. No “ámala si ella te ama bien.” Ámala como Cristo amó a una iglesia que todavía le fallaba.",
+      "La mayoría de los hombres miden su matrimonio por lo que están recibiendo. Pablo lo mide por lo que están entregando.",
+      "Esto no se trata de grandes gestos. Es diario — morir a tus preferencias, tu horario, tu necesidad de tener la razón, por el bien de la mujer que tienes enfrente.",
+      "<strong>Hermanos, el amor no es un sentimiento que esperas a que te devuelvan. Es un sacrificio que eliges hacer.</strong>",
+      "No pregunten “¿me está amando bien?” sino “¿me estoy entregando por ella como Cristo se entregó por mí?”"
+    ],
+    questions: [
+      "¿Dónde en tu matrimonio has estado esperando sentirte amado antes de actuar en amor?",
+      "¿Cómo se vería esta semana entregar algo por tu esposa sin esperar nada a cambio?",
+      "¿Hay un área específica de orgullo o preferencia a la que necesitas morir por ella?"
+    ]
+  },
+  pt: {
+    ref: "Efésios 5:25",
+    verse: "“Maridos, amai vossas mulheres, como também Cristo amou a igreja, e a si mesmo se entregou por ela.”",
+    title: "Amor É um Verbo Com uma Cruz Dentro",
+    body: [
+      "Paulo não pede aos maridos que sintam amor. Ele ordena que façam isso — modelado no ato mais custoso da história.",
+      "O amor de Cristo pela igreja não foi confortável, conveniente, nem correspondido no momento. Ele se entregou — primeiro, completamente, antes de qualquer resposta vir de volta. Esse é o padrão. Não “ame-a se ela te amar bem.” Ame-a como Cristo amou uma igreja que ainda falhava com Ele.",
+      "A maioria dos homens mede o casamento pelo que está recebendo. Paulo mede pelo que está entregando.",
+      "Isso não é sobre grandes gestos. É diário — morrer para suas preferências, sua agenda, sua necessidade de estar certo, pelo bem da mulher à sua frente.",
+      "<strong>Irmãos, amor não é um sentimento que você espera receber de volta. É um sacrifício que você escolhe fazer.</strong>",
+      "Não perguntem “ela está me amando bem?” mas “eu estou me entregando por ela como Cristo se entregou por mim?”"
+    ],
+    questions: [
+      "Onde no seu casamento você tem esperado se sentir amado antes de agir com amor?",
+      "Como seria esta semana entregar algo pela sua esposa sem esperar nada de volta?",
+      "Existe uma área específica de orgulho ou preferência à qual você precisa morrer por causa dela?"
+    ]
+  }
+},
+{
+  id: "anger",
+  en: {
+    ref: "Ephesians 4:26-27",
+    verse: "“Be angry and do not sin; do not let the sun go down on your anger, and give no opportunity to the devil.”",
+    title: "Don't Let It Set Up Camp",
+    body: [
+      "Notice what Paul doesn't say: he doesn't say never be angry. Anger itself isn't the sin. What you do with it, and how long you let it sit, is where the danger starts.",
+      "“Do not let the sun go down” isn't a magic deadline. It's a warning about what unaddressed anger becomes overnight — resentment, distance, a grudge with a foothold.",
+      "“Give no opportunity to the devil” is a strong phrase for something men treat casually. Unresolved anger isn't just an emotional inconvenience. It's an open door.",
+      "Most men handle anger one of two ways — explode or bury it. Paul's calling for a third way: feel it honestly, and deal with it before it hardens.",
+      "<strong>Brothers, anger unaddressed doesn't disappear. It sets up camp and invites company.</strong>",
+      "Whatever you're angry about right now, don't let it outlast the day without at least naming it to God or to the person involved."
+    ],
+    questions: [
+      "What's something you're currently angry about that you haven't actually dealt with?",
+      "Do you tend to explode or bury your anger — and what has that pattern cost you?",
+      "What would it look like to address this specific anger before today ends?"
+    ]
+  },
+  es: {
+    ref: "Efesios 4:26-27",
+    verse: "“Airaos, pero no pequéis; no se ponga el sol sobre vuestro enojo, ni deis lugar al diablo.”",
+    title: "No Dejes Que Acampe",
+    body: [
+      "Fíjate en lo que Pablo no dice: no dice que nunca te enojes. El enojo en sí no es el pecado. Lo que haces con él, y cuánto tiempo lo dejas ahí, es donde empieza el peligro.",
+      "“No se ponga el sol” no es una fecha límite mágica. Es una advertencia sobre en qué se convierte el enojo sin resolver durante la noche — resentimiento, distancia, un rencor con terreno ganado.",
+      "“Ni deis lugar al diablo” es una frase fuerte para algo que los hombres tratan con ligereza. El enojo sin resolver no es solo un inconveniente emocional. Es una puerta abierta.",
+      "La mayoría de los hombres manejan el enojo de dos maneras — explotan o lo entierran. Pablo llama a una tercera vía: sentirlo honestamente, y tratarlo antes de que se endurezca.",
+      "<strong>Hermanos, el enojo sin resolver no desaparece. Acampa e invita compañía.</strong>",
+      "Lo que sea que te tenga enojado ahora mismo, no dejes que dure más que el día sin al menos nombrarlo delante de Dios o de la persona involucrada."
+    ],
+    questions: [
+      "¿Con qué estás enojado ahora mismo que en realidad no has tratado?",
+      "¿Tiendes a explotar o a enterrar tu enojo — y qué te ha costado ese patrón?",
+      "¿Cómo se vería tratar este enojo específico antes de que termine el día de hoy?"
+    ]
+  },
+  pt: {
+    ref: "Efésios 4:26-27",
+    verse: "“Irai-vos, e não pequeis; não se ponha o sol sobre a vossa ira. Nem deis lugar ao diabo.”",
+    title: "Não Deixe Acampar",
+    body: [
+      "Repare no que Paulo não diz: ele não diz para nunca ficar com raiva. A raiva em si não é o pecado. O que você faz com ela, e por quanto tempo a deixa ali, é onde o perigo começa.",
+      "“Não se ponha o sol” não é um prazo mágico. É um aviso sobre o que a raiva não resolvida se torna durante a noite — ressentimento, distância, um rancor com terreno ganho.",
+      "“Nem deis lugar ao diabo” é uma frase forte para algo que os homens tratam com leveza. Raiva não resolvida não é apenas um incômodo emocional. É uma porta aberta.",
+      "A maioria dos homens lida com a raiva de duas formas — explode ou enterra. Paulo chama para um terceiro caminho: senti-la honestamente, e lidar com ela antes que endureça.",
+      "<strong>Irmãos, raiva não tratada não desaparece. Ela acampa e convida companhia.</strong>",
+      "O que quer que esteja te deixando com raiva agora, não deixe durar mais que o dia de hoje sem ao menos nomeá-la diante de Deus ou da pessoa envolvida."
+    ],
+    questions: [
+      "Com o que você está com raiva agora que na verdade ainda não tratou?",
+      "Você tende a explodir ou enterrar sua raiva — e o que esse padrão já custou a você?",
+      "Como seria tratar essa raiva específica antes que o dia de hoje termine?"
+    ]
+  }
+}
+];
+
+let lang = 'en';
+let idx = 0;
+const STORAGE_KEY = 'sixty_seconds_read_days';
+
+function getReadSet(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  }catch(e){ return new Set(); }
+}
+function saveReadSet(set){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify([...set])); }catch(e){}
+}
+
+function render(){
+  const d = DEVOTIONALS[idx][lang];
+  const ui = UI_TEXT[lang];
+
+  document.getElementById('refLine').textContent = d.ref;
+  document.getElementById('verseLine').textContent = d.verse;
+  document.getElementById('titleLine').textContent = d.title;
+
+  const bodyEl = document.getElementById('bodyLines');
+  bodyEl.innerHTML = d.body.map(p => `<p>${p}</p>`).join('');
+
+  document.getElementById('qTitle').textContent = ui.q;
+  const qList = document.getElementById('questionsList');
+  qList.innerHTML = d.questions.map((q,i) => `
+    <div class="q"><div class="num">${i+1}</div><div>${q}</div></div>
+  `).join('');
+
+  document.getElementById('prevBtn').textContent = ui.prev;
+  document.getElementById('nextBtn').textContent = ui.next;
+
+  // dots
+  const dotsEl = document.getElementById('dots');
+  dotsEl.innerHTML = DEVOTIONALS.map((_,i) =>
+    `<div class="dot ${i===idx?'active':''}" data-i="${i}"></div>`
+  ).join('');
+  dotsEl.querySelectorAll('.dot').forEach(el=>{
+    el.addEventListener('click', ()=>{ idx = parseInt(el.dataset.i); render(); });
+  });
+
+  // read state
+  const readSet = getReadSet();
+  const key = DEVOTIONALS[idx].id;
+  const markBtn = document.getElementById('markBtn');
+  if(readSet.has(key)){
+    markBtn.textContent = ui.done;
+    markBtn.classList.add('done');
+  } else {
+    markBtn.textContent = ui.mark;
+    markBtn.classList.remove('done');
+  }
+  document.getElementById('streakLabel').innerHTML = ui.streak(readSet.size);
+}
+
+document.getElementById('prevBtn').addEventListener('click', ()=>{
+  idx = (idx - 1 + DEVOTIONALS.length) % DEVOTIONALS.length;
+  render();
+});
+document.getElementById('nextBtn').addEventListener('click', ()=>{
+  idx = (idx + 1) % DEVOTIONALS.length;
+  render();
+});
+document.getElementById('markBtn').addEventListener('click', ()=>{
+  const readSet = getReadSet();
+  const key = DEVOTIONALS[idx].id;
+  if(readSet.has(key)) readSet.delete(key); else readSet.add(key);
+  saveReadSet(readSet);
+  render();
+});
+document.getElementById('langToggle').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  lang = btn.dataset.lang;
+  document.querySelectorAll('#langToggle button').forEach(b=>b.classList.toggle('active', b===btn));
+  render();
+});
+
+// open on today's devotional (rotates through the set by day-of-year)
+const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+idx = dayOfYear % DEVOTIONALS.length;
+
+render();
+
+// register service worker for offline support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+  });
+}
+
+// Android/Chrome "Add to Home Screen" prompt
+let deferredInstallPrompt = null;
+const installBtn = document.getElementById('installBtn');
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  installBtn.hidden = false;
+});
+installBtn.addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  installBtn.hidden = true;
+});
+window.addEventListener('appinstalled', () => { installBtn.hidden = true; });
+</script>
+</body>
+</html>
